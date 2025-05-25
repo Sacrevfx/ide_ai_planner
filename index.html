@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📘 Documento PREVC Completo — Ambiente de Desenvolvimento Local com IA para Temas WordPress</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f5f5f5;
+            --text-color: #333;
+            --highlight-color: #ff6b00;
+            --section-bg: #e0e0e0;
+            --card-bg: #fff;
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --header-bg: #333;
+            --header-text: #fff;
+            --code-bg: #f0f0f0;
+            --code-border: #ddd;
+            --button-bg: #ff6b00;
+            --button-text: #fff;
+            --button-hover: #e05e00;
+            --step-number-bg: #ff6b00;
+            --step-number-text: #fff;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #1a1a1a;
+            --text-color: #f0f0f0;
+            --highlight-color: #ff8c3f;
+            --section-bg: #2a2a2a;
+            --card-bg: #333;
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            --header-bg: #111;
+            --header-text: #fff;
+            --code-bg: #2d2d2d;
+            --code-border: #444;
+            --button-bg: #ff8c3f;
+            --button-text: #fff;
+            --button-hover: #ff6b00;
+            --step-number-bg: #ff8c3f;
+            --step-number-text: #fff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            line-height: 1.6;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+            padding-top: 60px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: var(--header-bg);
+            color: var(--header-text);
+            padding: 20px;
+            text-align: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin: 30px 0 15px;
+            padding: 10px 15px;
+            background-color: var(--section-bg);
+            border-left: 5px solid var(--highlight-color);
+            font-weight: 700;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            margin: 20px 0 10px;
+            font-weight: 600;
+            color: var(--highlight-color);
+        }
+
+        p, ul, ol {
+            margin-bottom: 15px;
+        }
+
+        ul, ol {
+            padding-left: 25px;
+        }
+
+        li {
+            margin-bottom: 5px;
+        }
+
+        .highlight {
+            background-color: var(--highlight-color);
+            color: white;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--card-shadow);
+        }
+
+        pre {
+            background-color: var(--code-bg);
+            border: 1px solid var(--code-border);
+            border-radius: 5px;
+            padding: 15px;
+            overflow-x: auto;
+            margin: 15px 0;
+            position: relative;
+        }
+
+        code {
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9rem;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .copy-btn:hover {
+            opacity: 1;
+            background-color: var(--button-hover);
+        }
+
+        .theme-toggle {
+            background-color: transparent;
+            border: 2px solid var(--header-text);
+            color: var(--header-text);
+            border-radius: 20px;
+            padding: 5px 15px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+
+        .theme-toggle:hover {
+            background-color: var(--header-text);
+            color: var(--header-bg);
+        }
+
+        .nav-container {
+            position: fixed;
+            top: 70px;
+            left: 20px;
+            width: 250px;
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: var(--card-shadow);
+            max-height: calc(100vh - 100px);
+            overflow-y: auto;
+            display: none;
+        }
+
+        .nav-toggle {
+            position: fixed;
+            top: 70px;
+            left: 20px;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 1001;
+            box-shadow: var(--card-shadow);
+        }
+
+        .nav-menu {
+            list-style: none;
+            padding: 0;
+        }
+
+        .nav-menu li {
+            margin-bottom: 10px;
+        }
+
+        .nav-menu a {
+            color: var(--text-color);
+            text-decoration: none;
+            display: block;
+            padding: 5px 0;
+            transition: color 0.3s;
+        }
+
+        .nav-menu a:hover {
+            color: var(--highlight-color);
+        }
+
+        .nav-submenu {
+            list-style: none;
+            padding-left: 15px;
+            display: none;
+        }
+
+        .nav-menu li.active .nav-submenu {
+            display: block;
+        }
+
+        .nav-menu li.has-submenu > a::after {
+            content: "+";
+            margin-left: 5px;
+        }
+
+        .nav-menu li.active.has-submenu > a::after {
+            content: "-";
+        }
+
+        .export-btn {
+            display: block;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            border: none;
+            border-radius: 4px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin: 20px auto;
+            transition: background-color 0.3s;
+        }
+
+        .export-btn:hover {
+            background-color: var(--button-hover);
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid var(--code-border);
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--section-bg);
+            font-weight: 600;
+        }
+
+        .emoji {
+            margin-right: 5px;
+        }
+
+        .step-container {
+            display: flex;
+            margin-bottom: 20px;
+            border-left: 3px solid var(--highlight-color);
+            padding-left: 15px;
+        }
+
+        .step-number {
+            background-color: var(--step-number-bg);
+            color: var(--step-number-text);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            flex-grow: 1;
+        }
+
+        .step-content h4 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: var(--highlight-color);
+            font-weight: 600;
+        }
+
+        .note-box {
+            background-color: var(--section-bg);
+            border-left: 4px solid var(--highlight-color);
+            padding: 10px 15px;
+            margin: 15px 0;
+            border-radius: 0 4px 4px 0;
+        }
+
+        @media (min-width: 1024px) {
+            .content {
+                margin-left: 280px;
+            }
+
+            .nav-container {
+                display: block;
+            }
+
+            .nav-toggle {
+                display: none;
+            }
+        }
+
+        @media (max-width: 1023px) {
+            .nav-container.active {
+                display: block;
+            }
+
+            .content.nav-open {
+                margin-left: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            h2 {
+                font-size: 1.3rem;
+            }
+
+            .nav-container {
+                width: 220px;
+            }
+        }
+
+        .directory-structure {
+            font-family: 'Consolas', 'Monaco', monospace;
+            white-space: pre-wrap;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>📘 Documento PREVC Completo</h1>
+        <p>Ambiente de Desenvolvimento Local com IA para Temas WordPress</p>
+        <button class="theme-toggle" id="theme-toggle">Alternar Modo Escuro</button>
+    </header>
+
+    <button class="nav-toggle" id="nav-toggle">☰</button>
+
+    <div class="nav-container" id="nav-container">
+        <nav>
+            <ul class="nav-menu">
+                <li><a href="#metodologia">Metodologia PREVC</a></li>
+                <li><a href="#identificacao">1. Identificação do Projeto</a></li>
+                <li><a href="#objetivo-geral">2. Objetivo Geral</a></li>
+                <li><a href="#objetivo-principal">3. Objetivo Principal</a></li>
+                <li><a href="#escopo">4. Escopo Inicial</a></li>
+                <li><a href="#restricoes">5. Restrições e Requisitos</a></li>
+                <li><a href="#ferramentas">6. Ferramentas e Pacotes</a></li>
+                <li><a href="#ameacas">7. Ameaças ou Riscos</a></li>
+                <li><a href="#validacao">8. Validação da Ideia</a></li>
+                <li class="has-submenu"><a href="#execucao">9. Execução</a>
+                    <ul class="nav-submenu">
+                        <li><a href="#estrutura">9.1 Estrutura de Pastas</a></li>
+                        <li><a href="#arquivos">9.2 Arquivos de Exemplo</a></li>
+                        <li><a href="#comandos">9.3 Comandos PowerShell</a></li>
+                    </ul>
+                </li>
+                <li class="has-submenu"><a href="#guia-instalacao">Guia de Instalação</a>
+                    <ul class="nav-submenu">
+                        <li><a href="#preparacao">Preparação do Ambiente</a></li>
+                        <li><a href="#instalacao-ollama">Instalação do Ollama</a></li>
+                        <li><a href="#instalacao-void">Instalação do Void IDE</a></li>
+                        <li><a href="#instalacao-llm-router">Configuração do llm-router</a></li>
+                        <li><a href="#instalacao-cloudflare">Configuração do Cloudflare Tunnel</a></li>
+                        <li><a href="#integracao">Integração dos Componentes</a></li>
+                    </ul>
+                </li>
+                <li class="has-submenu"><a href="#recursos">Recursos Adicionais</a>
+                    <ul class="nav-submenu">
+                        <li><a href="#links">Links Oficiais</a></li>
+                        <li><a href="#exemplos">Exemplos de Configuração</a></li>
+                        <li><a href="#extensoes">Extensões VS Code</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="container">
+        <div class="content" id="content">
+            <section id="metodologia" class="card">
+                <h2>Metodologia PREVC</h2>
+                <p>O documento segue a metodologia PREVC, que consiste em:</p>
+                <ul>
+                    <li><span class="highlight">P</span>lanejamento</li>
+                    <li><span class="highlight">R</span>evisão</li>
+                    <li><span class="highlight">E</span>xecução</li>
+                    <li><span class="highlight">V</span>alidação</li>
+                    <li><span class="highlight">C</span>onclusão</li>
+                </ul>
+                <p>Esta metodologia estrutura o processo de desenvolvimento, garantindo que todas as etapas sejam devidamente planejadas, revisadas, executadas, validadas e concluídas.</p>
+            </section>
+
+            <section id="identificacao" class="card">
+                <h2>1. <span class="emoji">📌</span> Identificação do Projeto</h2>
+                <ul>
+                    <li><strong>ID do Projeto:</strong> proj-localdev-ia-001</li>
+                    <li><strong>Título:</strong> Ambiente de Desenvolvimento Local com IA para Temas WordPress</li>
+                    <li><strong>Data de Criação:</strong> 2025-05-24</li>
+                    <li><strong>Responsável/Autor:</strong> Roger</li>
+                    <li><strong>Status Inicial:</strong> Rascunho</li>
+                </ul>
+            </section>
+
+            <section id="objetivo-geral" class="card">
+                <h2>2. <span class="emoji">🎯</span> Objetivo Geral</h2>
+                <p>Criar um ambiente de desenvolvimento local assistido por IA, focado na criação de temas WordPress. A IA atua como um desenvolvedor sênior autônomo ou semi-assistido com suporte a modelos LLM via proxy seguro e endpoint unificado.</p>
+            </section>
+
+            <section id="objetivo-principal" class="card">
+                <h2>3. <span class="emoji">🎯</span> Objetivo Principal</h2>
+                <p>Estruturar e validar um ambiente com integração de modelos de linguagem rodando localmente via Ollama, integrados ao IDE por meio do llm-router e acesso remoto via Cloudflare Tunnel.</p>
+                <h3><span class="emoji">🔹</span> Entregáveis Esperados:</h3>
+                <ul>
+                    <li>Ambiente funcional com suporte a temas como Elementor Pro, WooCommerce e templates premium</li>
+                    <li>Endpoint unificado para múltiplos LLMs (API compatível com OpenAI)</li>
+                    <li>Integração entre designer sênior e IA</li>
+                </ul>
+            </section>
+
+            <section id="escopo" class="card">
+                <h2>4. <span class="emoji">📌</span> Escopo Inicial (Scope)</h2>
+                <ul>
+                    <li><strong>IDE principal:</strong> Void IDE</li>
+                    <li><strong>Endpoint router:</strong> llm-router</li>
+                    <li><strong>Execução de modelos:</strong> Ollama</li>
+                    <li><strong>Proxy seguro:</strong> Cloudflare Tunnel</li>
+                    <li><strong>Diretório base:</strong> D:\wpcoderai</li>
+                    <li><strong>Organização modular:</strong> entre ferramentas globais e projetos isolados</li>
+                </ul>
+            </section>
+
+            <section id="restricoes" class="card">
+                <h2>5. <span class="emoji">🚫</span> Restrições e Requisitos Não-Funcionais</h2>
+                <ul>
+                    <li><strong>Plataforma:</strong> Windows 11 (WSL opcional)</li>
+                    <li><strong>Hardware:</strong> NVIDIA RTX 3060 (12GB), 32GB RAM</li>
+                    <li><strong>Instalação:</strong> PowerShell, Git</li>
+                    <li><strong>Rede:</strong> Acesso somente para downloads e proxy</li>
+                    <li><strong>Segurança:</strong> HTTPS via túnel, sem exposição direta de portas</li>
+                </ul>
+            </section>
+
+            <section id="ferramentas" class="card">
+                <h2>6. <span class="emoji">📦</span> Ferramentas, Bibliotecas ou Pacotes Propostos</h2>
+                <h3>MODELOS:</h3>
+                <ul>
+                    <li>ollama/llama3:latest</li>
+                    <li>ollama/gemma3:12b-it-q4_K_M</li>
+                    <li>ollama/dagbs/deepseek-coder-v2-lite-instruct:latest</li>
+                </ul>
+
+                <h3>FERRAMENTAS:</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Ferramenta</th>
+                                <th>Detalhes</th>
+                                <th>Link</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Void IDE</td>
+                                <td>IDE com IA local</td>
+                                <td><a href="https://voideditor.com/" target="_blank">Void IDE</a></td>
+                            </tr>
+                            <tr>
+                                <td>llm-router</td>
+                                <td>Router de múltiplos LLMs</td>
+                                <td><a href="https://github.com/kcolemangt/llm-router" target="_blank">llm-router</a></td>
+                            </tr>
+                            <tr>
+                                <td>Ollama</td>
+                                <td>Execução de LLM local</td>
+                                <td><a href="https://ollama.com/" target="_blank">Ollama</a></td>
+                            </tr>
+                            <tr>
+                                <td>Cloudflare Tunnel</td>
+                                <td>Proxy HTTPS com domínio</td>
+                                <td><a href="https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/get-started/" target="_blank">Cloudflare Tunnel</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="ameacas" class="card">
+                <h2>7. <span class="emoji">🔐</span> Ameaças ou Riscos Iniciais (Threat Model)</h2>
+                <ul>
+                    <li><strong>Contexto excessivo:</strong> divisão entre agentes especializados</li>
+                    <li><strong>Falhas no proxy:</strong> monitoramento e reinicialização automática</li>
+                    <li><strong>Conflitos de versão:</strong> padronização via .env e config.js</li>
+                    <li><strong>Uso excessivo de recursos:</strong> monitoramento pelo monitor-agent</li>
+                </ul>
+            </section>
+
+            <section id="validacao" class="card">
+                <h2>8. <span class="emoji">🗺</span> Validação da Ideia — Checklist</h2>
+                <ul>
+                    <li>✅ IDE validada: Void IDE (backup: TRAE IDE)</li>
+                    <li>✅ Router validado com endpoints locais</li>
+                    <li>✅ Proxy HTTPS funcional (Cloudflare Tunnel)</li>
+                    <li>✅ Ollama testado com modelos no Windows 11</li>
+                    <li>✅ Modelos utilizados: Llama 2, Mistral 7B, DeepSeek-Coder, Gemma 3</li>
+                    <li>✅ Estrutura de diretórios e divisão de agentes definida</li>
+                </ul>
+            </section>
+
+            <section id="execucao" class="card">
+                <h2>9. <span class="emoji">→</span> Execução — Plano de Validação</h2>
+                
+                <section id="estrutura">
+                    <h3>9.1 <span class="emoji">🗂</span> Estrutura de Pastas</h3>
+                    <pre class="directory-structure"><code>D:\wpcoderai\
+├── environment\
+│   ├── void-ide\
+│   │   ├── src\
+│   │   ├── public\
+│   │   ├── .gitignore\
+│   │   └── README.md\
+│   ├── llm-router\
+│   │   ├── routes\
+│   │   ├── config.js
+│   │   ├── .env
+│   │   └── package.json
+│   ├── ollama\
+│   │   ├── models\
+│   │   ├── config.yaml
+│   │   └── README.md
+│   └── cloudflare\
+│       ├── cloudflared.exe
+│       ├── config.yml
+│       └── cert.pem
+├── mcp-universal\
+│   └── agents\
+│       ├── dev-agent\
+│       │   └── prompt_template.txt
+│       ├── test-agent\
+│       │   └── tests_spec.md
+│       ├── content-agent\
+│       │   └── content_guidelines.md
+│       └── monitor-agent\
+│           └── monitor_config.json
+├── templates\
+│   ├── ecommerce\
+│   │   ├── template.php
+│   │   └── style.css
+│   └── institucional\
+│       ├── header.php
+│       └── footer.php
+└── projects\
+    └── cliente-exemplo\
+        ├── theme\
+        │   ├── index.php
+        │   ├── functions.php
+        │   └── .gitignore
+        └── README.md</code></pre>
+                </section>
+
+                <section id="arquivos">
+                    <h3>9.2 <span class="emoji">📄</span> Arquivos de Exemplo</h3>
+                    
+                    <h3>9.2.1 .gitignore</h3>
+                    <pre><code>/node_modules
+.env
+*.log
+__pycache__/
+.DS_Store</code><button class="copy-btn" data-clipboard-target="#gitignore">Copiar</button></pre>
+
+                    <h3>9.2.2 config.js (llm-router)</h3>
+                    <pre><code>module.exports = {
+  port: 3000,
+  endpoints: {
+    default: "http://localhost:11434",
+    agents: {
+      "dev-agent": "/api/dev",
+      "test-agent": "/api/test",
+      "content-agent": "/api/content",
+      "monitor-agent": "/api/monitor"
+    }
+  },
+  aliases: ["dev-agent", "test-agent", "content-agent", "monitor-agent"]
+};</code><button class="copy-btn" data-clipboard-target="#config-js">Copiar</button></pre>
+
+                    <h3>9.2.3 .env</h3>
+                    <pre><code>NODE_ENV=development
+OLLAMA_HOST=http://localhost:11434
+PROXY_HOST=https://seudominio.cloudflare.dev</code><button class="copy-btn" data-clipboard-target="#env-file">Copiar</button></pre>
+                </section>
+
+                <section id="comandos">
+                    <h3>9.3 <span class="emoji">⚙️</span> Comandos PowerShell</h3>
+                    
+                    <h4>Criar Diretórios</h4>
+                    <pre><code>New-Item -Path "D:\wpcoderai" -ItemType Directory
+cd D:\wpcoderai
+mkdir environment, mcp-universal, templates, projects</code><button class="copy-btn" data-clipboard-target="#cmd-dirs">Copiar</button></pre>
+
+                    <h4>Instalar Ollama</h4>
+                    <pre><code>Invoke-WebRequest -Uri "https://ollama.com/download/OllamaSetup.exe" -OutFile "D:\wpcoderai\environment\ollama\OllamaSetup.exe"
+Start-Process "D:\wpcoderai\environment\ollama\OllamaSetup.exe" -Wait</code><button class="copy-btn" data-clipboard-target="#cmd-ollama">Copiar</button></pre>
+
+                    <h4>Executar Modelos</h4>
+                    <pre><code>ollama run llama2
+ollama run mistral-7b</code><button class="copy-btn" data-clipboard-target="#cmd-models">Copiar</button></pre>
+
+                    <h4>Instalar llm-router</h4>
+                    <pre><code>cd D:\wpcoderai\environment
+git clone https://github.com/kcolemangt/llm-router.git
+cd llm-router
+npm install
+npm run dev</code><button class="copy-btn" data-clipboard-target="#cmd-router">Copiar</button></pre>
+
+                    <h4>Configurar Cloudflare Tunnel</h4>
+                    <pre><code>Invoke-WebRequest -Uri "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-windows-amd64.exe" -OutFile "D:\wpcoderai\environment\cloudflare\cloudflared.exe"
+D:\wpcoderai\environment\cloudflare\cloudflared.exe login
+D:\wpcoderai\environment\cloudflare\cloudflared.exe tunnel create wpcoderai-tunnel</code><button class="copy-btn" data-clipboard-target="#cmd-cloudflare">Copiar</button></pre>
+
+                    <h4>Clonar e iniciar Void IDE</h4>
+                    <pre><code>cd D:\wpcoderai\environment
+git clone https://github.com/voideditor/void.git
+cd void
+npm install
+npm run dev</code><button class="copy-btn" data-clipboard-target="#cmd-void">Copiar</button></pre>
+                </section>
+            </section>
+
+            <section id="guia-instalacao" class="card">
+                <h2><span class="emoji">🚀</span> Guia de Instalação Passo a Passo</h2>
+                <p>Este guia detalhado apresenta todos os passos necessários para configurar o ambiente de desenvolvimento local com IA para temas WordPress, desde a preparação inicial até a integração completa de todos os componentes.</p>
+                
+                <section id="preparacao">
+                    <h3><span class="emoji">🛠️</span> Preparação do Ambiente</h3>
+                    
+                    <div class="step-container">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Verificar Requisitos do Sistema</h4>
+                            <p>Certifique-se de que seu sistema atende aos requisitos mínimos:</p>
+                            <ul>
+                                <li>Windows 11</li>
+                                <li>NVIDIA RTX 3060 (12GB) ou equivalente</li>
+                                <li>32GB RAM</li>
+                                <li>Pelo menos 20GB de espaço livre em disco</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="step-container">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>Instalar Ferramentas Básicas</h4>
+                            <p>Instale as ferramentas fundamentais necessárias:</p>
+                            <ol>
+                                <li>Instale o <a href="https://git-scm.com/download/win" target="_blank">Git para Windows</a></li>
+                                <li>Verifique se o PowerShell está atualizado (versão 5.1 ou superior)</li>
+                                <li>Instale o <a href="https://nodejs.org/en/download/" target="_blank">Node.js</a> (versão LTS recomendada)</li>
+                            </ol>
+                            <p>Para verificar as versões instaladas, abra o PowerShell e execute:</p>
+                            <pre><code>git --version
+$PSVersionTable.PSVersion
+node --version
+npm --version</code><button class="copy-btn" data-clipboard-target="#check-versions">Copiar</button></pre>
+                        </div>
+                    </div>
+                    
+                    <div class="step-container">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4>Criar Estrutura de Diretórios</h4>
+                            <p>Abra o PowerShell como administrador e execute os seguintes comandos para criar a estrutura de diretórios base:</p>
+                            <pre><code>New-Item -Path "D:\wpcoderai" -ItemType Directory
+cd D:\wpcoderai
+mkdir environment, mcp-universal, templates, projects
+cd environment
+mkdir void-ide, llm-router, ollama, cloudflare
+cd ..\mcp-universal
+mkdir agents
+cd agents
+mkdir dev-agent, test-agent, content-agent, monitor-agent</code><button class="copy-btn" data-clipboard-target="#create-dirs">Copiar</button></pre>
+                        </div>
+                    </div>
+                </section>
+                
+                <section id="instalacao-ollama">
+                    <h3><span class="emoji">🧠</span> Instalação e Configuração do Ollama</h3>
+                    
+                    <div class="step-container">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h4>Baixar e Instalar o Ollama</h4>
+                            <p>Baixe e instale o Ollama para executar modelos de linguagem localmente:</p>
+                            <pre><code>cd D:\wpcoderai\environment\ollama
+Invoke-WebRequest -Uri "https://ollama.com/download/OllamaSetup.exe" -OutFile "OllamaSetup.exe"
+Start-Process "OllamaSetup.exe" -Wait</code><button class="copy-btn" data-clipboard-target="#install-ollama">Copiar</button></pre>
+                            <p>Siga as instruções do instalador. Após a instalação, o Ollama estará disponível como um serviço em segundo plano.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="step-container">
+                        <div class="step-number">5</div>
+                        <div class="step-content">
+                            <h4>Baixar Modelos de IA</h4>
+                            <p>Baixe os modelos de IA necessários para o ambiente. Abra um novo terminal PowerShell e execute:</p>
+                            <pre><code># Baixar Llama 3
+ollama pull llama3
+
+# Baixar Gemma 3
+ollama pull gemma3:12b-it-q4_K_M
+
+# Baixar DeepSeek Coder
+ollama pull dagbs/deepseek-coder-v2-lite-instruct</code><button class="copy-btn" data-clipboard-target="#download-models">Copiar</button></pre>
+                            <div class="note-box">
+                                <p><strong>Nota:</strong> O download dos modelos pode levar algum tempo, dependendo da sua conexão com a internet. Cada modelo tem vários gigabytes.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-container">
+                        <div class="step-number">6</div>
+                        <div class="step-content">
+                            <h4>Testar o Funcionamento do Ollama</h4>
+                            <p>Verifique se o Ollama está funcionando corretamente executando um modelo:</p>
+                            <pre><code>ollama run llama3 "Olá, estou testando o ambiente de desenvolvimento com IA."</code><button class="copy-btn" data-clipboard-target="#test-ollama">Copiar</button></pre>
+                            <p>Você deve receber uma resposta do modelo, confirmando que o Ollama está funcionando corretamente.</p>
+                        </div>
+                    </div>
+                </section>
+                
+                <section id="instalacao-void">
+                    <h3><span class="emoji">💻</span> Instalação do Void IDE</h3>
+                    
+                    <div class="step-container">
+                        <div class="step-number">7</div>
+                        <div class="step-content">
+                            <h4>Clonar o Repositório do Void IDE</h4>
+                            <p>Clone o repositório do Void IDE do GitHub:</p>
+                            <pre><code>cd D:\wpcoderai\environment
+git clone https://github.com/voideditor/void.git void-ide
+cd void-ide</code><button class="copy-btn" data-clipboard-target="#clone-void">Copiar</button></pre>
+                        </div>
+                    </div>
+                    
+                    <div class="step-container">
+                        <div class="step-number">8</div>
+                        <div class="step-content">
+                            <h4>Instalar Dependências e Compilar</h4>
+                            <p>Instale as dependências necessárias e compile o Void IDE:</p>
+                            <pre><code>npm install
+npm run build</code><button class="copy-btn" data-clipboard-target="#build-void">Copiar</button></pre>
+                            <div class="note-box">
+                                <p><strong>Nota:</strong> A compilação pode levar alguns minutos. Se ocorrerem erros relacionados a versões do Node.js, considere usar o nvm (Node Version Manager) para instalar a versão específica necessária.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-container">
+                        <div class="step-number">9</div>
+                        <div class="step-content">
+                            <h4>Iniciar o Void IDE</h4>
+                            <p>Inicie o Void IDE para verificar se a instalação foi bem-sucedida:</p>
+                            <pre><code>npm run dev</code><button class="copy-btn" data-clipboard-target="#start-void">Copiar</button></pre>
+                            <p>O Void IDE deve ser iniciado e abrir uma janela. Você pode fechar a aplicação após confirmar que está funcionando corretamente.</p>
+                        </div>
+                    </div>
+                </section>
+                
+                <section id="instalacao-llm-router">
+                    <h3><span class="emoji">🔄</span> Configuração do llm-router</h3>
+                    
+                    <div class="step-container">
+                        <div class="step-number">10</div>
+                        <div class="step-content">
+                            <h4>Clonar o Repositório do llm-router</h4>
+                            <p>Clone o repositório do llm-router do GitHub:</p>
+                            <pre><code>cd D:\wpcoderai\environment
+git clone https://github.com/kcolemangt/llm-router.git llm-router
+cd llm-router</code><button class="copy-btn" data-clipboard-target="#clone-router">Copiar</button></pre>
+                        </div>
+                    </div>
+                    
+                    <div class="step-container">
+                        <div class="step-number">11</div>
+                        <div class="step-content">
+                            <h4>Instalar Dependências</h4>
+                            <p>Instale as dependências necessárias para o llm-router:</p>
+                            <pre><code>npm install</code><button class="copy-btn" data-clipboard-target="#install-router-deps">Copiar</button></pre>
+                        </div>
+                    </div>
+                    
+                    <div class="step-container">
+                        <div class="step-number">12</div>
+                        <div class="step-content">
+                            <h4>Configurar o llm-router</h4>
+                            <p>Crie os arquivos de configuração necessários:</p>
+                            <p>1. Crie o arquivo <code>config.js</code>:</p>
+                            <pre><code>module.exports = {
+  port: 3000,
+  endpoints: {
+    default: "http://localhost:11434",
+    agents: {
+      "dev-agent": "/api/dev",
+      "test-agent": "/api/test",
+      "content-agent": "/api/content",
+      "monitor-agent": "/api/monitor"
+    }
+  },
+  aliases: ["dev-agent", "test-agent", "content-agent", "monitor-agent"]
+};</code><button class="copy-btn" data-clipboard-target="#config-js-router">Copiar</button></pre>
+                            <p>2. Crie o arquivo <code>.env</code>:</p>
+                            <pre><code>NODE_ENV=development
+OLLAMA_HOST=http://localhost:11434
+PROXY_HOST=https://seudominio.cloudflare.dev</code><button class="copy-btn" data-clipboard-target="#env-router">Copiar</button></pre>
+                            <div class="note-box">
+                                <p><strong>Nota:</strong> Você atualizará o valor de <code>PROXY_HOST</code> após configurar o Cloudflare Tunnel.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-container">
+                        <div class="step-number">13</div>
+                        <div class="step-content">
+                            <h4>Testar o llm-router</h4>
+                            <p>Inicie o llm-router para verificar se a configuração está correta:</p>
+                            <pre><code>npm run dev</code><button class="copy-btn" data-clipboard-target="#start-router">Copiar</button></pre>
+                            <p>Você deve ver mensagens indicando que o servidor está em execução na porta 3000. Pressione Ctrl+C para parar o servidor após confirmar que está funcionando.</p>
+                        </div>
+                    </div>
+                </section>
+                
+                <section id="instalacao-cloudflare">
+                    <h3><span class="emoji">🔒</span> Configuração do Cloudflare Tunnel</h3>
+                    
+                    <div class="step-container">
+                        <div class="step-number">14</div>
+                        <div class="step-content">
+                            <h4>Baixar o Cloudflared</h4>
+                            <p>Baixe o cliente Cloudflared para criar e gerenciar túneis:</p>
+                            <pre><code>cd D:\wpcoderai\environment\cloudflare
+Invoke-WebRequest -Uri "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-windows-amd64.exe" -OutFile "cloudflared.exe"</code><button class="copy-btn" data-clipboard-target="#download-cloudflared">Copiar</button></pre>
+                        </div>
+                    </div>
+                    
+                    <div class="step-container">
+                        <div class="step-number">15</div>
+                        <div class="step-content">
+                            <h4>Autenticar com o Cloudflare</h4>
+                            <p>Autentique-se com sua conta do Cloudflare:</p>
+                            <pre><code>cd D:\wpcoderai\environment\cloudflare
+.\cloudflared.exe login</code><button class="copy-btn" data-clipboard-target="#cloudflare-login">Copiar</button></pre>
+                            <p>Este comando abrirá uma página no navegador. Faça login na sua conta Cloudflare e autorize o acesso. Após a autenticação, um certificado será salvo automaticamente no diretório.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="step-container">
+                        <div class="step-number">16</div>
+                        <div class="step-content">
+                            <h4>Criar um Túnel</h4>
+                            <p>Crie um túnel para seu ambiente de desenvolvimento:</p>
+                            <pre><code>.\cloudflared.exe tunnel create wpcoderai-tunnel</code><button class="copy-btn" data-clipboard-target="#create-tunnel">Copiar</button></pre>
+                            <p>Este comando criará um túnel e gerará um arquivo de configuração com um UUID único. Anote o UUID do túnel, pois você precisará dele nas próximas etapas.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="step-container">
+                        <div class="step-number">17</div>
+                        <div class="step-content">
+                            <h4>Configurar o Túnel</h4>
+                            <p>Crie um arquivo de configuração para o túnel. Substitua <code>SEU-UUID-AQUI</code> pelo UUID gerado na etapa anterior:</p>
+                            <pre><code>$tunnelConfig = @"
+tunnel: SEU-UUID-AQUI
+credentials-file: D:\wpcoderai\environment\cloudflare\.cloudflared\SEU-UUID-AQUI.json
+ingress:
+  - hostname: wpcoderai.yourdomain.com
+    service: http://localhost:3000
+  - service: http_status:404
+"@
+
+$tunnelConfig | Out-File -FilePath "D:\wpcoderai\environment\cloudflare\config.yml" -Encoding utf8</code><button class="copy-btn" data-clipboard-target="#tunnel-config">Copiar</button></pre>
+                            <div class="note-box">
+                                <p><strong>Nota:</strong> Substitua <code>wpcoderai.yourdomain.com</code> pelo subdomínio que você deseja usar. Este domínio deve estar registrado e gerenciado pelo Cloudflare.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-container">
+                        <div class="step-number">18</div>
+                        <div class="step-content">
+                            <h4>Configurar DNS no Cloudflare</h4>
+                            <p>Adicione um registro CNAME no painel do Cloudflare:</p>
+                            <ol>
+                                <li>Faça login no <a href="https://dash.cloudflare.com/" target="_blank">Dashboard do Cloudflare</a></li>
+                                <li>Selecione seu domínio</li>
+                                <li>Vá para a seção DNS</li>
+                                <li>Adicione um registro CNAME:
+                                    <ul>
+                                        <li>Nome: wpcoderai (ou o subdomínio que você escolheu)</li>
+                                        <li>Conteúdo: SEU-UUID-AQUI.cfargotunnel.com</li>
+                                        <li>TTL: Auto</li>
+                                        <li>Proxy status: Proxied</li>
+                                    </ul>
+                                </li>
+                                <li>Salve o registro</li>
+                            </ol>
+                        </div>
+                    </div>
+                    
+                    <div class="step-container">
+                        <div class="step-number">19</div>
+                        <div class="step-content">
+                            <h4>Iniciar o Túnel</h4>
+                            <p>Inicie o túnel para testar a configuração:</p>
+                            <pre><code>cd D:\wpcoderai\environment\cloudflare
+.\cloudflared.exe tunnel run wpcoderai-tunnel</code><button class="copy-btn" data-clipboard-target="#run-tunnel">Copiar</button></pre>
+                            <p>Mantenha esta janela do PowerShell aberta. O túnel estará ativo enquanto o comando estiver em execução.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="step-container">
+                        <div class="step-number">20</div>
+                        <div class="step-content">
+                            <h4>Atualizar o Arquivo .env do llm-router</h4>
+                            <p>Atualize o arquivo .env do llm-router com o domínio do seu túnel:</p>
+                            <pre><code>cd D:\wpcoderai\environment\llm-router
+$envContent = @"
+NODE_ENV=development
+OLLAMA_HOST=http://localhost:11434
+PROXY_HOST=https://wpcoderai.yourdomain.com
+"@
+
+$envContent | Out-File -FilePath ".env" -Encoding utf8</code><button class="copy-btn" data-clipboard-target="#update-env">Copiar</button></pre>
+                            <div class="note-box">
+                                <p><strong>Nota:</strong> Substitua <code>wpcoderai.yourdomain.com</code> pelo subdomínio que você configurou no Cloudflare.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <section id="integracao">
+                    <h3><span class="emoji">🔗</span> Integração dos Componentes</h3>
+                    
+                    <div class="step-container">
+                        <div class="step-number">21</div>
+                        <div class="step-content">
+                            <h4>Configurar Agentes de IA</h4>
+                            <p>Configure os templates para os diferentes agentes de IA:</p>
+                            <pre><code>cd D:\wpcoderai\mcp-universal\agents\dev-agent
+$devTemplate = @"
+Você é um agente especializado em desenvolvimento WordPress.
+Seu objetivo é auxiliar na criação de temas e plugins.
+"@
+
+$devTemplate | Out-File -FilePath "prompt_template.txt" -Encoding utf8
+
+cd D:\wpcoderai\mcp-universal\agents\content-agent
+$contentTemplate = @"
+Você é um agente especializado em criação de conteúdo para WordPress.
+Seu objetivo é auxiliar na criação de textos, descrições e metadados.
+"@
+
+$contentTemplate | Out-File -FilePath "content_guidelines.md" -Encoding utf8</code><button class="copy-btn" data-clipboard-target="#agent-templates">Copiar</button></pre>
+                        </div>
+                    </div>
+                    
+                    <div class="step-container">
+                        <div class="step-number">22</div>
+                        <div class="step-content">
+                            <h4>Iniciar Todos os Serviços</h4>
+                            <p>Inicie todos os serviços em terminais separados:</p>
+                            <p>1. Terminal 1 - Ollama (já deve estar em execução como serviço)</p>
+                            <p>2. Terminal 2 - llm-router:</p>
+                            <pre><code>cd D:\wpcoderai\environment\llm-router
+npm run dev</code><button class="copy-btn" data-clipboard-target="#start-router-final">Copiar</button></pre>
+                            <p>3. Terminal 3 - Cloudflare Tunnel:</p>
+                            <pre><code>cd D:\wpcoderai\environment\cloudflare
+.\cloudflared.exe tunnel run wpcoderai-tunnel</code><button class="copy-btn" data-clipboard-target="#start-tunnel-final">Copiar</button></pre>
+                            <p>4. Terminal 4 - Void IDE:</p>
+                            <pre><code>cd D:\wpcoderai\environment\void-ide
+npm run dev</code><button class="copy-btn" data-clipboard-target="#start-void-final">Copiar</button></pre>
+                        </div>
+                    </div>
+                    
+                    <div class="step-container">
+                        <div class="step-number">23</div>
+                        <div class="step-content">
+                            <h4>Configurar o Void IDE para Usar o llm-router</h4>
+                            <p>Configure o Void IDE para usar o endpoint do llm-router:</p>
+                            <ol>
+                                <li>Abra o Void IDE</li>
+                                <li>Vá para Configurações (ícone de engrenagem)</li>
+                                <li>Selecione "AI Settings"</li>
+                                <li>Em "API Endpoint", insira: <code>https://wpcoderai.yourdomain.com/v1</code></li>
+                                <li>Em "API Key", insira qualquer valor (o llm-router não verifica a chave)</li>
+                                <li>Salve as configurações</li>
+                            </ol>
+                        </div>
+                    </div>
+                    
+                    <div class="step-container">
+                        <div class="step-number">24</div>
+                        <div class="step-content">
+                            <h4>Testar a Integração Completa</h4>
+                            <p>Teste se todos os componentes estão integrados corretamente:</p>
+                            <ol>
+                                <li>No Void IDE, crie um novo arquivo PHP</li>
+                                <li>Escreva um comentário solicitando ajuda ao assistente de IA, por exemplo:
+                                <pre><code>// Crie uma função para registrar um tema WordPress personalizado</code></pre></li>
+                                <li>Pressione Ctrl+Enter para ativar o assistente de IA</li>
+                                <li>Verifique se o assistente responde com código relevante</li>
+                            </ol>
+                            <p>Se o assistente responder corretamente, a integração está funcionando!</p>
+                        </div>
+                    </div>
+                </section>
+                
+                <div class="note-box">
+                    <h4>Configuração de Inicialização Automática (Opcional)</h4>
+                    <p>Para facilitar o uso diário, você pode criar scripts de inicialização automática para todos os serviços. Crie um arquivo batch <code>D:\wpcoderai\start-environment.bat</code> com o seguinte conteúdo:</p>
+                    <pre><code>@echo off
+echo Iniciando ambiente de desenvolvimento WordPress com IA...
+
+start "llm-router" cmd /k "cd D:\wpcoderai\environment\llm-router && npm run dev"
+timeout /t 5
+start "Cloudflare Tunnel" cmd /k "cd D:\wpcoderai\environment\cloudflare && cloudflared.exe tunnel run wpcoderai-tunnel"
+timeout /t 5
+start "Void IDE" cmd /k "cd D:\wpcoderai\environment\void-ide && npm run dev"
+
+echo Todos os serviços iniciados!
+echo Acesse o Void IDE para começar a desenvolver.</code><button class="copy-btn" data-clipboard-target="#startup-script">Copiar</button></pre>
+                </div>
+            </section>
+
+            <section id="recursos" class="card">
+                <h2><span class="emoji">🔗</span> Recursos Adicionais</h2>
+                
+                <section id="links">
+                    <h3>Links Oficiais para Downloads e Cadastros</h3>
+                    
+                    <h4>Void IDE</h4>
+                    <ul>
+                        <li><strong>Site Oficial:</strong> <a href="https://voideditor.com/" target="_blank">https://voideditor.com/</a></li>
+                        <li><strong>Repositório GitHub:</strong> <a href="https://github.com/voideditor/void" target="_blank">https://github.com/voideditor/void</a></li>
+                        <li><strong>Página de Releases:</strong> <a href="https://github.com/voideditor/void/releases" target="_blank">https://github.com/voideditor/void/releases</a></li>
+                    </ul>
+
+                    <h4>llm-router</h4>
+                    <ul>
+                        <li><strong>Repositório GitHub:</strong> <a href="https://github.com/kcolemangt/llm-router" target="_blank">https://github.com/kcolemangt/llm-router</a></li>
+                    </ul>
+
+                    <h4>Ollama</h4>
+                    <ul>
+                        <li><strong>Site Oficial:</strong> <a href="https://ollama.com/" target="_blank">https://ollama.com/</a></li>
+                        <li><strong>Download para Windows:</strong> <a href="https://ollama.com/download/windows" target="_blank">https://ollama.com/download/windows</a></li>
+                        <li><strong>Repositório GitHub:</strong> <a href="https://github.com/ollama/ollama" target="_blank">https://github.com/ollama/ollama</a></li>
+                        <li><strong>Documentação Windows:</strong> <a href="https://github.com/ollama/ollama/blob/main/docs/windows.md" target="_blank">https://github.com/ollama/ollama/blob/main/docs/windows.md</a></li>
+                    </ul>
+
+                    <h4>Cloudflare Tunnel</h4>
+                    <ul>
+                        <li><strong>Documentação Oficial:</strong> <a href="https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/get-started/" target="_blank">https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/get-started/</a></li>
+                        <li><strong>Guia de Criação de Túnel Local:</strong> <a href="https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/do-more-with-tunnels/local-management/create-local-tunnel/" target="_blank">https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/do-more-with-tunnels/local-management/create-local-tunnel/</a></li>
+                        <li><strong>Download do cloudflared:</strong> <a href="https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/downloads/" target="_blank">https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/downloads/</a></li>
+                    </ul>
+                </section>
+
+                <section id="exemplos">
+                    <h3>Exemplos de Configuração Adicionais</h3>
+                    
+                    <h4>modelfile para DeepSeek R2 (com configuração para português)</h4>
+                    <pre><code>model:
+  name: deepseek-coder-r2
+  version: latest
+  language: pt-BR
+  force_locale: true</code><button class="copy-btn" data-clipboard-target="#modelfile">Copiar</button></pre>
+                </section>
+
+                <section id="extensoes">
+                    <h3>Extensões do VS Code Recomendadas</h3>
+                    <ul>
+                        <li>ACF-Snippet — Snippets personalizados para o Advanced Custom Fields (ACF)</li>
+                        <li>EditorConfig for VS Code — Suporte do EditorConfig</li>
+                        <li>ESLint — Integração com JavaScript</li>
+                        <li>GitHub Copilot + Copilot Chat</li>
+                        <li>GitLens — Visualização avançada do Git</li>
+                        <li>Live Server — Servidor local com live reload</li>
+                        <li>Nomo Dark Icon Theme — Tema de ícones escuro</li>
+                        <li>PHP Intelephense — Inteligência de código PHP</li>
+                        <li>PHP IntelliSense — Autocompletação/refatoração PHP</li>
+                        <li>Prettier — Formatador de código</li>
+                        <li>seti-icons — Ícones para arquivos</li>
+                        <li>Tailwind CSS IntelliSense</li>
+                        <li>WordPress Snippets — Snippets da versão 6.0</li>
+                    </ul>
+                </section>
+            </section>
+
+            <button class="export-btn" id="export-btn">Exportar como PDF</button>
+        </div>
+    </div>
+
+    <script>
+        // Função para alternar o tema
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+        
+        themeToggle.addEventListener('click', () => {
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                themeToggle.textContent = 'Alternar para Modo Escuro';
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeToggle.textContent = 'Alternar para Modo Claro';
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+        
+        // Verificar preferência de tema salva
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            body.setAttribute('data-theme', 'dark');
+            themeToggle.textContent = 'Alternar para Modo Claro';
+        }
+        
+        // Navegação
+        const navToggle = document.getElementById('nav-toggle');
+        const navContainer = document.getElementById('nav-container');
+        const content = document.getElementById('content');
+        
+        navToggle.addEventListener('click', () => {
+            navContainer.classList.toggle('active');
+            content.classList.toggle('nav-open');
+        });
+        
+        // Submenu toggle
+        const submenuItems = document.querySelectorAll('.has-submenu > a');
+        
+        submenuItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const parent = item.parentElement;
+                parent.classList.toggle('active');
+            });
+        });
+        
+        // Função para copiar código
+        document.querySelectorAll('.copy-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const pre = button.parentElement;
+                const code = pre.querySelector('code').textContent;
+                
+                navigator.clipboard.writeText(code).then(() => {
+                    const originalText = button.textContent;
+                    button.textContent = 'Copiado!';
+                    setTimeout(() => {
+                        button.textContent = originalText;
+                    }, 2000);
+                }).catch(err => {
+                    console.error('Erro ao copiar: ', err);
+                });
+            });
+        });
+        
+        // Exportar como PDF
+        document.getElementById('export-btn').addEventListener('click', () => {
+            window.print();
+        });
+        
+        // Adicionar IDs aos elementos pre>code para os botões de cópia
+        document.querySelectorAll('pre code').forEach((codeBlock, index) => {
+            codeBlock.id = `code-block-${index}`;
+            const copyBtn = codeBlock.parentElement.querySelector('.copy-btn');
+            if (copyBtn) {
+                copyBtn.setAttribute('data-clipboard-target', `#code-block-${index}`);
+            }
+        });
+    </script>
+</body>
+</html>
